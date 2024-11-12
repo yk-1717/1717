@@ -1,0 +1,27 @@
+import requests
+from bs4 import BeautifulSoup
+
+def fetch_odds(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 假設在此處找到賠率的數據表格，根據實際的HTML結構進行修改
+    odds = []
+    for row in soup.select('tr.odds-row'):
+        cells = row.find_all('td')
+        if cells:
+            team = cells[0].text
+            odds_value = float(cells[1].text)
+            odds.append((team, odds_value))
+    
+    return odds
+
+def recommend_bet(odds):
+    # 假設使用簡單的邏輯，選擇最高賠率的團隊
+    best_bet = max(odds, key=lambda x: x[1])
+    return best_bet
+
+# Example usage
+url = 'https://example-betting-site.com/odds'  # 假的賠率網址
+odds = fetch_odds(url)
+print("最佳投注建議:", recommend_bet(odds))
